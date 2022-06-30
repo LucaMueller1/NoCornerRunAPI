@@ -5,7 +5,9 @@ var logger = require('morgan');
 const cors = require("cors");
 const AuthInterceptor = require('./services/AuthInterceptor');
 
-var userRouter = require('./routes/user');
+var playerAuthRouter = require('./routes/playerAuth');
+var playerRouter = require('./routes/player');
+var leaderboardRouter = require('./routes/leaderboard');
 
 var app = express();
 
@@ -15,8 +17,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/api/user', userRouter);   //no auth
-app.use(AuthInterceptor.intercept);
+app.use('/api/player', playerAuthRouter); // auth not required
+app.use(AuthInterceptor.intercept); // will intercept requests to routes below and checks for valid auth
+app.use('/api/player', playerRouter) // needs auth
+app.use('/api/leaderboard', leaderboardRouter) // needs auth
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

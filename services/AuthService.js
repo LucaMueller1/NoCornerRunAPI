@@ -1,24 +1,20 @@
 const bcrypt = require("bcrypt")
-const { DatabaseService } = require('./DatabaseService');
+const DatabaseService = require('./DatabaseService');
 require('dotenv').config();
 
-const loginWithCredentials = (username, password) => {
-    const user = DatabaseService.instance().getUser(username)
-    if(!user) return
+const loginWithCredentials = async(playername, password) => {
+    const player = await DatabaseService.instance().getPlayer(playername)
+    if(!player) return null
 
-    bcrypt.compare(password, user.password, (err, result) => {
-        if (!result) {
-           // password is invalid
-           return
-        }
-    });
+    const passwordMatch = await bcrypt.compare(password, player.password)
+    if(!passwordMatch) return null
     
-    const authToken = DatabaseService.instance().insertNewAuthToken(user.id)
+    const authToken = await DatabaseService.instance().insertNewAuthToken(player.playername)
     return authToken
 }
 
-const checkIfAuthTokenValid = (authToken) => {
-    const token = DatabaseService.instance().getAuthToken(authToken)
+const checkIfAuthTokenValid = async(authToken) => {
+    const token = await DatabaseService.instance().getAuthToken(authToken)
     if(!token) return false
     return true
 }
