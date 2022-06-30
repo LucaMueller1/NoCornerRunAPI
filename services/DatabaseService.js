@@ -36,7 +36,7 @@ module.exports = class DatabaseService {
     }
 
     async getPlayer(playername) {
-        const player = await this.client.query(`SELECT playername, highscore, knowledge FROM player WHERE player.playername = '${playername}'`)
+        const player = await this.client.query(`SELECT * FROM player WHERE player.playername = '${playername}'`)
         return player.rows[0]
     }
 
@@ -47,7 +47,7 @@ module.exports = class DatabaseService {
     async getPlayerByAuthToken(authToken) {
         const token = await this.getAuthToken(authToken)
         if(token == null) return null
-        const player = await this.client.query(`SELECT playername, highscore, knowledge FROM player WHERE player.playername = '${token.playername}'`)
+        const player = await this.client.query(`SELECT * FROM player WHERE player.playername = '${token.playername}'`)
         return player.rows[0]
     }
 
@@ -57,8 +57,8 @@ module.exports = class DatabaseService {
     }
 
     async getLeaderboard() {
-        const players = await this.client.query(`SELECT * FROM player ORDER BY player.highscore DESC LIMIT 100`)
-        return players
+        const players = await this.client.query(`SELECT playername, highscore FROM player ORDER BY player.highscore DESC LIMIT 100`)
+        return players.rows
     }
 
 }

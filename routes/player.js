@@ -8,9 +8,9 @@ router.get("/", async(req, res) => {
 
   const player = await DatabaseService.instance().getPlayerByAuthToken(authToken)
   if(player != null) {
-    res.status(200).send(player);
+    res.status(200).send({ playername: player.playername, highscore: player.highscore, knowledge: player.knowledge })
   } else {
-    res.status(403).send();
+    res.status(403).send()
   }
 
 });
