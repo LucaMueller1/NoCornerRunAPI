@@ -26,8 +26,7 @@ module.exports = class DatabaseService {
         if(hash === null) return
 
         //insert player
-        const player = await this.client.query(`INSERT INTO player(playername, password, highscore, knowledge) VALUES('${playername}', '${hash}', 0, 0)`)
-        return player.rows[0]
+        await this.client.query(`INSERT INTO player(playername, password, highscore, knowledge) VALUES('${playername}', '${hash}', 0, 0)`)
     }
 
     async insertNewAuthToken(playername) {
@@ -37,17 +36,18 @@ module.exports = class DatabaseService {
     }
 
     async getPlayer(playername) {
-        const player = await this.client.query(`SELECT * FROM player WHERE player.playername = '${playername}'`)
+        const player = await this.client.query(`SELECT playername, highscore, knowledge FROM player WHERE player.playername = '${playername}'`)
         return player.rows[0]
     }
 
     async updatePlayer(playername, highscore, knowledge) {
-        await this.client.query(`UPDATE player SET player.highscore = ${highscore}, player.knowledge = ${knowledge} WHERE player.playername = '${playername}'`)
+        await this.client.query(`UPDATE player SET highscore = ${highscore}, knowledge = ${knowledge} WHERE player.playername = '${playername}'`)
     }
 
     async getPlayerByAuthToken(authToken) {
-        const token = this.getAuthToken(authToken)
-        const player = await this.client.query(`SELECT * FROM player WHERE player.playername = '${token.playername}'`)
+        const token = await this.getAuthToken(authToken)
+        if(token == null) return null
+        const player = await this.client.query(`SELECT playername, highscore, knowledge FROM player WHERE player.playername = '${token.playername}'`)
         return player.rows[0]
     }
 
