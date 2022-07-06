@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - nocornerrun-db:/var/lib/postgresql/data
+
+  nocornerrunapi:
+    build:
+      context: .
+    environment:
+      PORT: 3000
+      PGHOST: postgres
+      PGUSER: postgres
+      PGDATABASE: postgres
+      PGPASSWORD: postgres
+      PGPORT: 5432
+    depends_on:
+      - postgres
+    ports:
+      - '3000:3000'
+        
+volumes:
+  nocornerrun-db:

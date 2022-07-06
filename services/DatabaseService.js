@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt")
 const uuid = require('uuid');
+const { readFileSync } = require('fs');
 const { Client } = require('pg')
 
 module.exports = class DatabaseService {
@@ -8,6 +9,7 @@ module.exports = class DatabaseService {
 
     constructor() {
         this.initDB()
+        this.createSchema()
     }
 
     async initDB() {
@@ -61,4 +63,9 @@ module.exports = class DatabaseService {
         return players.rows
     }
 
+    async createSchema() {
+        console.log("Creating schema...")
+        const sqlCreateSchema = readFileSync('schema.sql').toString()
+        await this.client.query(sqlCreateSchema)
+    }
 }

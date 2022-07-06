@@ -8,6 +8,7 @@ const AuthInterceptor = require('./services/AuthInterceptor');
 var playerAuthRouter = require('./routes/playerAuth');
 var playerRouter = require('./routes/player');
 var leaderboardRouter = require('./routes/leaderboard');
+const DatabaseService = require('./services/DatabaseService');
 
 var app = express();
 
@@ -16,6 +17,9 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+//load database connector and instantiate schema
+DatabaseService.instance()
 
 app.use('/api/player', playerAuthRouter); // auth not required
 app.use(AuthInterceptor.intercept); // will intercept requests to routes below and checks for valid auth
