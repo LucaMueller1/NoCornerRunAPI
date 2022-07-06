@@ -19,7 +19,7 @@ router.get("/", async(req, res) => {
 router.put("/", async(req, res) => {
   const authToken = req.header("Authorization")
 
-  if(!req.body.highscore || !req.body.knowledge) {
+  if(req.body.highscore != null || req.body.knowledge != null) {
     res.status(400).send("Missing highscore or knowledge in body to update player")
     return
   }
