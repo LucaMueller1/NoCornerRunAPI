@@ -63,6 +63,16 @@ module.exports = class DatabaseService {
         return players.rows
     }
 
+    async getShopSkins() {
+        const skins = await this.client.query(`SELECT * FROM skin`)
+        return skins.rows
+    }
+
+    async getUnlockedSkinsByPlayer(playername) {
+        const skins = await this.client.query(`SELECT skin_id FROM player_has_skin WHERE playername = '${playername}'`)
+        return skins.rows
+    }
+
     async createSchema() {
         console.log("Creating schema...")
         const sqlCreateSchema = readFileSync('schema.sql').toString()

@@ -38,4 +38,18 @@ router.put("/", async(req, res) => {
   })
 });
 
+//get player skins
+router.get("/skins", async(req, res) => {
+  const authToken = req.header("Authorization")
+
+  const player = await DatabaseService.instance().getPlayerByAuthToken(authToken)
+  if(player == null) {
+    res.status(400).send("Failed to get player")
+    return
+  }
+
+  const skinIds = await DatabaseService.instance().getUnlockedSkinsByPlayer(player.playername)
+  res.status(200).send(skinIds)
+});
+
 module.exports = router;
